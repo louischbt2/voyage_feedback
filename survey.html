@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Syroco Live · Voyage feedback</title>
+
+  <style>
+    body {font-family: system-ui, sans-serif; max-width: 620px; margin: 0 auto; padding: 1rem;}
+    h1   {font-size: 1.4rem; margin-bottom: .5rem;}
+    fieldset {border: none; margin: 1rem 0;}
+    legend   {font-weight: 600; margin-bottom: .3rem;}
+    label    {display: flex; justify-content: space-between; margin: .25rem 0;}
+    textarea {width: 100%; min-height: 3.5rem; margin-top: .3rem;}
+    button   {padding: .6rem 1.2rem; border: 0; border-radius: .5rem; font-size: 1rem;}
+  </style>
+
+  <script>
+  // ——— pre-fill Q1 and hidden voyage ID from the URL
+  window.addEventListener('DOMContentLoaded', () => {
+    const p = new URLSearchParams(location.search);
+    const val = p.get('q1');
+    if (val) document.querySelector(`input[name="q1"][value="${val}"]`).checked = true;
+    document.getElementById('voyage').value = p.get('voyage') || '';
+  });
+
+  // ——— send to your Apps Script
+  async function send(e){
+    e.preventDefault();
+    const data = new FormData(e.target);
+    await fetch('https://script.google.com/macros/s/AKfycbxwKZTtfIel-_sTiodJMCPdAqtHbqVh8IseOOBXki9_5XZAowtjkfuDuaPmxH4oyCwg/exec', {method:'POST', body:data});
+    e.target.innerHTML = '<h2>Merci ! Feedback received.</h2>';
+  }
+  </script>
+</head>
+
+<body>
+<h1>Quick debrief (1 min)</h1>
+
+<form onsubmit="send(event)">
+  <input type="hidden" name="voyage" id="voyage">
+
+  <!-- Q1 -->
+  <fieldset>
+    <legend>1 · Route-optimisation quality</legend>
+    <label>1 <input type="radio" name="q1" value="1"></label>
+    <label>2 <input type="radio" name="q1" value="2"></label>
+    <label>3 <input type="radio" name="q1" value="3"></label>
+    <label>4 <input type="radio" name="q1" value="4"></label>
+    <label>5 <input type="radio" name="q1" value="5"></label>
+    <textarea name="c1" placeholder="Comment (optional)"></textarea>
+  </fieldset>
+
+  <!-- Duplicate the block below for Q2-Q6, just change q2/c2, legend text, etc. -->
+  <!-- … -->
+  <!-- Q2 -->
+  <fieldset>
+    <legend>1 · Route-optimisation quality</legend>
+    <label>1 <input type="radio" name="q2" value="1"></label>
+    <label>2 <input type="radio" name="q2" value="2"></label>
+    <label>3 <input type="radio" name="q2" value="3"></label>
+    <label>4 <input type="radio" name="q2" value="4"></label>
+    <label>5 <input type="radio" name="q2" value="5"></label>
+    <textarea name="c2" placeholder="Comment (optional)"></textarea>
+  </fieldset>
+
+  <!-- Q3 -->
+  <fieldset>
+    <legend>1 · Route-optimisation quality</legend>
+    <label>1 <input type="radio" name="q3" value="1"></label>
+    <label>2 <input type="radio" name="q3" value="2"></label>
+    <label>3 <input type="radio" name="q3" value="3"></label>
+    <label>4 <input type="radio" name="q3" value="4"></label>
+    <label>5 <input type="radio" name="q3" value="5"></label>
+    <textarea name="c3" placeholder="Comment (optional)"></textarea>
+  </fieldset>
+
+  <!-- Q4 -->
+  <fieldset>
+    <legend>1 · Route-optimisation quality</legend>
+    <label>1 <input type="radio" name="q4" value="1"></label>
+    <label>2 <input type="radio" name="q4" value="2"></label>
+    <label>3 <input type="radio" name="q4" value="3"></label>
+    <label>4 <input type="radio" name="q4" value="4"></label>
+    <label>5 <input type="radio" name="q4" value="5"></label>
+    <textarea name="c4" placeholder="Comment (optional)"></textarea>
+  </fieldset>
+
+  <!-- Q5 -->
+  <fieldset>
+    <legend>1 · Route-optimisation quality</legend>
+    <label>1 <input type="radio" name="q5" value="1"></label>
+    <label>2 <input type="radio" name="q5" value="2"></label>
+    <label>3 <input type="radio" name="q5" value="3"></label>
+    <label>4 <input type="radio" name="q5" value="4"></label>
+    <label>5 <input type="radio" name="q5" value="5"></label>
+    <textarea name="c5" placeholder="Comment (optional)"></textarea>
+  </fieldset>
+
+  <button type="submit">Submit</button>
+</form>
+</body>
+</html>
