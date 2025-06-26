@@ -2,101 +2,144 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Syroco Live · Voyage feedback</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Syroco Live · Voyage Feedback</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body {font-family: system-ui, sans-serif; max-width: 620px; margin: 0 auto; padding: 1rem;}
-    h1   {font-size: 1.4rem; margin-bottom: .5rem;}
-    fieldset {border: none; margin: 1rem 0;}
-    legend   {font-weight: 600; margin-bottom: .3rem;}
-    label    {display: flex; justify-content: space-between; margin: .25rem 0;}
-    textarea {width: 100%; min-height: 3.5rem; margin-top: .3rem;}
-    button   {padding: .6rem 1.2rem; border: 0; border-radius: .5rem; font-size: 1rem;}
+    :root{
+      --primary:#007396;        /* Syroco blue header */
+      --star-off:#d5d5d5;
+      --star-on:#ffbf00;
+      --border:#dfe6e9;
+    }
+    *{box-sizing:border-box;font-family:'Inter',system-ui,sans-serif;}
+    body{margin:0;padding:0;background:#f3f3f3;}
+    .container{max-width:640px;margin:2rem auto;background:#fff;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,.1);overflow:hidden;}
+    header{background:var(--primary);color:#fff;padding:20px;text-align:center;}
+    header h1{margin:0;font-size:1.6rem;font-weight:600;}
+    main{padding:2rem 1.2rem;}
+    fieldset{border:0;margin:1.5rem 0;}
+    legend{font-size:1.1rem;font-weight:600;color:#2d3436;margin-bottom:.4rem;}
+    .hint{font-size:.925rem;color:#636e72;margin-bottom:.6rem;}
+    /* star rating */
+    .stars{display:flex;gap:.35rem;flex-direction:row-reverse;justify-content:flex-end;}
+    .stars input{display:none;}
+    .stars label{font-size:1.8rem;cursor:pointer;color:var(--star-off);transition:color .15s ease-in;}
+    .stars input:checked ~ label,
+    .stars label:hover,
+    .stars label:hover ~ label{color:var(--star-on);}   
+    textarea{width:100%;min-height:3.5rem;padding:.55rem .65rem;margin-top:.6rem;border:1px solid var(--border);border-radius:8px;font-size:.95rem;resize:vertical;}
+    button{display:inline-block;margin-top:1.8rem;background:var(--primary);color:#fff;font-weight:500;font-size:1rem;border:0;border-radius:8px;padding:.8rem 1.6rem;cursor:pointer;transition:opacity .2s ease;}
+    button:hover{opacity:.9;}
   </style>
-
   <script>
-  // ——— pre-fill Q1 and hidden voyage ID from the URL
-  window.addEventListener('DOMContentLoaded', () => {
-    const p = new URLSearchParams(location.search);
-    const val = p.get('q1');
-    if (val) document.querySelector(`input[name="q1"][value="${val}"]`).checked = true;
-    document.getElementById('voyage').value = p.get('voyage') || '';
+  // Prefill Q1 and voyage ID from URL parameters
+  window.addEventListener('DOMContentLoaded',()=>{
+    const p=new URLSearchParams(location.search);
+    const v=p.get('voyage');
+    if(v) document.getElementById('voyage').value=v;
+    const q1=p.get('q1');
+    if(q1){
+      const radio=document.querySelector(`input[name='q1'][value='${q1}']`);
+      if(radio) radio.checked=true;
+    }
   });
-
-  // ——— send to your Apps Script
   async function send(e){
     e.preventDefault();
-    const data = new FormData(e.target);
-    await fetch('https://script.google.com/macros/s/AKfycbxwKZTtfIel-_sTiodJMCPdAqtHbqVh8IseOOBXki9_5XZAowtjkfuDuaPmxH4oyCwg/exec', {method:'POST', body:data});
-    e.target.innerHTML = '<h2>Merci ! Feedback received.</h2>';
+    const form=new FormData(e.target);
+    const endpoint='https://script.google.com/macros/s/AKfycbxwKZTtfIel-_sTiodJMCPdAqtHbqVh8IseOOBXki9_5XZAowtjkfuDuaPmxH4oyCwg/exec'; // <-- replace if needed
+    try{
+      await fetch(endpoint,{method:'POST',body:form});
+      e.target.innerHTML='<h2 style="text-align:center">Merci ! Your feedback has been recorded.</h2>';
+    }catch(err){
+      alert('Network issue. Please retry later.');
+    }
   }
   </script>
 </head>
-
 <body>
-<h1>Quick debrief (1 min)</h1>
+  <div class="container">
+    <header>
+      <h1>Syroco Live · Voyage Feedback</h1>
+    </header>
+    <main>
+      <form onsubmit="send(event)">
+        <input type="hidden" name="voyage" id="voyage">
 
-<form onsubmit="send(event)">
-  <input type="hidden" name="voyage" id="voyage">
+        <!-- Q1 -->
+        <fieldset>
+          <legend>1 · Route‑optimisation quality</legend>
+          <div class="hint">How well did the optimised route fit your operational needs while increasing efficiency?</div>
+          <div class="stars">
+            <input type="radio" id="q1-5" name="q1" value="5"><label for="q1-5">★</label>
+            <input type="radio" id="q1-4" name="q1" value="4"><label for="q1-4">★</label>
+            <input type="radio" id="q1-3" name="q1" value="3"><label for="q1-3">★</label>
+            <input type="radio" id="q1-2" name="q1" value="2"><label for="q1-2">★</label>
+            <input type="radio" id="q1-1" name="q1" value="1"><label for="q1-1">★</label>
+          </div>
+          <textarea name="c1" placeholder="Comment (optional)"></textarea>
+        </fieldset>
 
-  <!-- Q1 -->
-  <fieldset>
-    <legend>1 · Route-optimisation quality</legend>
-    <label>1 <input type="radio" name="q1" value="1"></label>
-    <label>2 <input type="radio" name="q1" value="2"></label>
-    <label>3 <input type="radio" name="q1" value="3"></label>
-    <label>4 <input type="radio" name="q1" value="4"></label>
-    <label>5 <input type="radio" name="q1" value="5"></label>
-    <textarea name="c1" placeholder="Comment (optional)"></textarea>
-  </fieldset>
+        <!-- Q2 -->
+        <fieldset>
+          <legend>2 · Digital twin accuracy</legend>
+          <div class="hint">Does the digital twin match your ship's performance?</div>
+          <div class="stars">
+            <input type="radio" id="q2-5" name="q2" value="5"><label for="q2-5">★</label>
+            <input type="radio" id="q2-4" name="q2" value="4"><label for="q2-4">★</label>
+            <input type="radio" id="q2-3" name="q2" value="3"><label for="q2-3">★</label>
+            <input type="radio" id="q2-2" name="q2" value="2"><label for="q2-2">★</label>
+            <input type="radio" id="q2-1" name="q2" value="1"><label for="q2-1">★</label>
+          </div>
+          <textarea name="c2" placeholder="Comment (optional)"></textarea>
+        </fieldset>
 
-  <!-- Duplicate the block below for Q2-Q6, just change q2/c2, legend text, etc. -->
-  <!-- … -->
-  <!-- Q2 -->
-  <fieldset>
-    <legend>1 · Route-optimisation quality</legend>
-    <label>1 <input type="radio" name="q2" value="1"></label>
-    <label>2 <input type="radio" name="q2" value="2"></label>
-    <label>3 <input type="radio" name="q2" value="3"></label>
-    <label>4 <input type="radio" name="q2" value="4"></label>
-    <label>5 <input type="radio" name="q2" value="5"></label>
-    <textarea name="c2" placeholder="Comment (optional)"></textarea>
-  </fieldset>
+        <!-- Q3 -->
+        <fieldset>
+          <legend>3 · Onwatch support</legend>
+          <div class="hint">How would you rate the support you received from the Onwatch team?</div>
+          <div class="stars">
+            <input type="radio" id="q3-5" name="q3" value="5"><label for="q3-5">★</label>
+            <input type="radio" id="q3-4" name="q3" value="4"><label for="q3-4">★</label>
+            <input type="radio" id="q3-3" name="q3" value="3"><label for="q3-3">★</label>
+            <input type="radio" id="q3-2" name="q3" value="2"><label for="q3-2">★</label>
+            <input type="radio" id="q3-1" name="q3" value="1"><label for="q3-1">★</label>
+          </div>
+          <textarea name="c3" placeholder="Comment (optional)"></textarea>
+        </fieldset>
 
-  <!-- Q3 -->
-  <fieldset>
-    <legend>1 · Route-optimisation quality</legend>
-    <label>1 <input type="radio" name="q3" value="1"></label>
-    <label>2 <input type="radio" name="q3" value="2"></label>
-    <label>3 <input type="radio" name="q3" value="3"></label>
-    <label>4 <input type="radio" name="q3" value="4"></label>
-    <label>5 <input type="radio" name="q3" value="5"></label>
-    <textarea name="c3" placeholder="Comment (optional)"></textarea>
-  </fieldset>
+        <!-- Q4  -->
+        <fieldset>
+          <legend>4 · Weather forecast quality</legend>
+          <div class="hint">How would you rate the weather forecast quality for this voyage?</div>
+          <div class="stars">
+            <input type="radio" id="q4-5" name="q4" value="5"><label for="q5-5">★</label>
+            <input type="radio" id="q4-4" name="q4" value="4"><label for="q5-4">★</label>
+            <input type="radio" id="q4-3" name="q4" value="3"><label for="q5-3">★</label>
+            <input type="radio" id="q4-2" name="q4" value="2"><label for="q5-2">★</label>
+            <input type="radio" id="q4-1" name="q4" value="1"><label for="q5-1">★</label>
+          </div>
+          <textarea name="c5" placeholder="Comment (optional)"></textarea>
+        </fieldset>
 
-  <!-- Q4 -->
-  <fieldset>
-    <legend>1 · Route-optimisation quality</legend>
-    <label>1 <input type="radio" name="q4" value="1"></label>
-    <label>2 <input type="radio" name="q4" value="2"></label>
-    <label>3 <input type="radio" name="q4" value="3"></label>
-    <label>4 <input type="radio" name="q4" value="4"></label>
-    <label>5 <input type="radio" name="q4" value="5"></label>
-    <textarea name="c4" placeholder="Comment (optional)"></textarea>
-  </fieldset>
+        <!-- Q5 -->
+        <fieldset>
+          <legend>5 · Overall satisfaction</legend>
+          <div class="hint">Rate your overall satisfaction with Syroco Live.</div>
+          <div class="stars">
+            <input type="radio" id="q5-5" name="q5" value="5"><label for="q6-5">★</label>
+            <input type="radio" id="q5-4" name="q5" value="4"><label for="q6-4">★</label>
+            <input type="radio" id="q5-3" name="q5" value="3"><label for="q6-3">★</label>
+            <input type="radio" id="q5-2" name="q5" value="2"><label for="q6-2">★</label>
+            <input type="radio" id="q5-1" name="q5" value="1"><label for="q6-1">★</label>
+          </div>
+          <textarea name="c5" placeholder="Comment (optional)"></textarea>
+        </fieldset>
 
-  <!-- Q5 -->
-  <fieldset>
-    <legend>1 · Route-optimisation quality</legend>
-    <label>1 <input type="radio" name="q5" value="1"></label>
-    <label>2 <input type="radio" name="q5" value="2"></label>
-    <label>3 <input type="radio" name="q5" value="3"></label>
-    <label>4 <input type="radio" name="q5" value="4"></label>
-    <label>5 <input type="radio" name="q5" value="5"></label>
-    <textarea name="c5" placeholder="Comment (optional)"></textarea>
-  </fieldset>
-
-  <button type="submit">Submit</button>
-</form>
+        <button type="submit">Submit Feedback</button>
+      </form>
+    </main>
+  </div>
 </body>
 </html>
