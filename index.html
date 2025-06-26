@@ -45,14 +45,24 @@
       if(radio) radio.checked=true;
     }
   });
+
+  let submitted=false;
   async function send(e){
-    e.preventDefault();
+     e.preventDefault();
+    if(submitted) return;            // block second click
+    submitted=true;
+
+    const btn=e.target.querySelector("button[type='submit']");
+    if(btn){btn.disabled=true;btn.textContent='Sending…';}
+
     const form=new FormData(e.target);
-    const endpoint='https://script.google.com/macros/s/AKfycbxwKZTtfIel-_sTiodJMCPdAqtHbqVh8IseOOBXki9_5XZAowtjkfuDuaPmxH4oyCwg/exec'; // <-- replace if needed
+    const endpoint='PASTE_YOUR_SCRIPT_URL_HERE'; // <-- replace if needed
     try{
       await fetch(endpoint,{method:'POST',body:form});
       e.target.innerHTML='<h2 style="text-align:center">Merci ! Your feedback has been recorded.</h2>';
     }catch(err){
+      if(btn){btn.disabled=false;btn.textContent='Submit Feedback';}
+      submitted=false;
       alert('Network issue. Please retry later.');
     }
   }
