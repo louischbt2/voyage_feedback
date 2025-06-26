@@ -56,7 +56,7 @@
     if(btn){btn.disabled=true;btn.textContent='Sending…';}
 
     const form=new FormData(e.target);
-    const endpoint='PASTE_YOUR_SCRIPT_URL_HERE'; // <-- replace if needed
+    const endpoint='https://script.google.com/macros/s/AKfycbxwKZTtfIel-_sTiodJMCPdAqtHbqVh8IseOOBXki9_5XZAowtjkfuDuaPmxH4oyCwg/exec'; // <-- replace if needed
     try{
       await fetch(endpoint,{method:'POST',body:form});
       e.target.innerHTML='<h2 style="text-align:center">Merci ! Your feedback has been recorded.</h2>';
